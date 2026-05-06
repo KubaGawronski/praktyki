@@ -18,13 +18,14 @@ function App() {
   const [results, setResults] = useState<Connection[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [sort, setSort] = useState("");
 
   const handleSearch = async () => {
     setLoading(true);
     setSearched(true);
 
     const res = await fetch(
-        `http://localhost:3001/connections?from=${from}&to=${to}&date=${date}`
+        `http://localhost:3001/connections?from=${from}&to=${to}&date=${date}&sort=${sort}`
     );
     const data = await res.json();
 
@@ -40,6 +41,13 @@ function App() {
           <input placeholder="Skąd" onChange={e => setFrom(e.target.value)} />
           <input placeholder="Dokąd" onChange={e => setTo(e.target.value)} />
           <input type="date" onChange={e => setDate(e.target.value)} />
+
+          <select onChange={(e) => setSort(e.target.value)}>
+            <option value="">Sortuj</option>
+            <option value="price">Cena</option>
+            <option value="duration">Czas</option>
+          </select>
+
           <button style={{ padding: "8px 12px", cursor: "pointer" }} onClick={handleSearch}>
             Szukaj
           </button>
