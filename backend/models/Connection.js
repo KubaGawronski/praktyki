@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const connectionSchema = new mongoose.Schema({
     from: String,
     to: String,
-    date: Date,
+    date: String,
     departureTime: String,
     arrivalTime: String,
     duration: Number,
