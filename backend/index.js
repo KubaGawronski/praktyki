@@ -17,8 +17,21 @@ app.get("/", (req, res) => {
 const Connection = require("./models/Connection");
 
 app.get("/connections", async (req, res) => {
-    const data = await Connection.find();
-    res.json(data);
+    try {
+        const { from, to, date } = req.query;
+
+        const query = {};
+
+        if (from) query.from = from;
+        if (to) query.to = to;
+        if (date) query.date = date;
+
+        const connections = await Connection.find(query);
+
+        res.json(connections);
+    } catch (err) {
+        res.status(500).json({ error: "Błąd pobierania danych" });
+    }
 });
 
 app.post("/connections", async (req, res) => {
