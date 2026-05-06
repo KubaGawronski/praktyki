@@ -26,21 +26,35 @@ function App() {
   };
 
   return (
-      <div>
-        <h1>Wyszukiwarka połączeń 🚆</h1>
+      <div style={{ maxWidth: "800px", margin: "0 auto", fontFamily: "Arial" }}>
+        <h1 style={{ textAlign: "center" }}>🚆 Wyszukiwarka połączeń</h1>
 
-        <input placeholder="Skąd" onChange={e => setFrom(e.target.value)} />
-        <input placeholder="Dokąd" onChange={e => setTo(e.target.value)} />
-        <input type="date" onChange={e => setDate(e.target.value)} />
+        <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+          <input placeholder="Skąd" onChange={e => setFrom(e.target.value)} />
+          <input placeholder="Dokąd" onChange={e => setTo(e.target.value)} />
+          <input type="date" onChange={e => setDate(e.target.value)} />
+          <button style={{ padding: "8px 12px", cursor: "pointer" }} onClick={handleSearch}>
+            Szukaj
+          </button>
+        </div>
 
-        <button onClick={handleSearch}>Szukaj</button>
         <div>
           {results.map((conn: Connection, index) => (
-              <div key={index} style={{ border: "1px solid gray", margin: "10px", padding: "10px" }}>
-                <p>{conn.from} → {conn.to}</p>
+              <div key={index} style={{
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                padding: "15px",
+                marginBottom: "10px",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+              }}>
+                <h3>{conn.from} → {conn.to}</h3>
+
                 <p>{conn.departureTime} - {conn.arrivalTime}</p>
-                <p>{conn.duration} min</p>
-                <p>{conn.price} zł</p>
+
+                <p>Czas: {conn.duration} min</p>
+
+                <p>Cena: {conn.price} zł</p>
+
                 <p>Przesiadki: {conn.changes}</p>
               </div>
           ))}
