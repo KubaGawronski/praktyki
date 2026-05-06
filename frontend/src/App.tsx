@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+
 type Connection = {
   from: string;
   to: string;
@@ -15,14 +16,20 @@ function App() {
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
   const [results, setResults] = useState<Connection[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
 
   const handleSearch = async () => {
+    setLoading(true);
+    setSearched(true);
+
     const res = await fetch(
         `http://localhost:3001/connections?from=${from}&to=${to}&date=${date}`
     );
     const data = await res.json();
 
-    setResults(data); // zamiast console.log
+    setResults(data);
+    setLoading(false);
   };
 
   return (
@@ -58,6 +65,11 @@ function App() {
                 <p>Przesiadki: {conn.changes}</p>
               </div>
           ))}
+          {loading && <p>Ładowanie...</p>}
+
+          {searched && !loading && results.length === 0 && (
+              <p>Brak połączeń</p>
+          )}
         </div>
       </div>
   );
