@@ -18,7 +18,7 @@ const Connection = require("./models/Connection");
 
 app.get("/connections", async (req, res) => {
     try {
-        const { from, to, date } = req.query;
+        const { from, to, date, sort } = req.query;
 
         const query = {};
 
@@ -26,7 +26,12 @@ app.get("/connections", async (req, res) => {
         if (to) query.to = to;
         if (date) query.date = date;
 
-        const connections = await Connection.find(query);
+        let sortOption = {};
+
+        if (sort === "price") sortOption.price = 1;
+        if (sort === "duration") sortOption.duration = 1;
+
+        const connections = await Connection.find(query).sort(sortOption);
 
         res.json(connections);
     } catch (err) {
