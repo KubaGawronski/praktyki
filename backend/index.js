@@ -66,6 +66,15 @@ app.get("/add-test", async (req, res) => {
     res.send("Dodano!");
 });
 
+app.delete("/connections/:id", async (req, res) => {
+    try {
+        await Connection.findByIdAndDelete(req.params.id);
+        res.json({ message: "Usunięto połączenie" });
+    } catch (err) {
+        res.status(500).json({ error: "Błąd usuwania" });
+    }
+});
+
 app.listen(3001, () => {
     console.log("Server 3001");
 });
