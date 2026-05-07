@@ -2,6 +2,7 @@ import { useState } from "react";
 
 
 type Connection = {
+  _id?: string;
   from: string;
   to: string;
   departureTime: string;
@@ -81,6 +82,17 @@ function App() {
                 <p>Cena: {conn.price} zł</p>
 
                 <p>Przesiadki: {conn.changes}</p>
+
+                <button onClick={async () => {
+                  await fetch(`http://localhost:3001/connections/${conn._id}`, {
+                    method: "DELETE"
+                  });
+
+                  alert("Usunięto!");
+                }}>
+                  Usuń
+                </button>
+
               </div>
           ))}
           {loading && <p>Ładowanie...</p>}
