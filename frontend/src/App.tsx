@@ -19,6 +19,16 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [sort, setSort] = useState("");
+  const [newConnection, setNewConnection] = useState({
+    from: "",
+    to: "",
+    date: "",
+    departureTime: "",
+    arrivalTime: "",
+    duration: 0,
+    price: 0,
+    changes: 0
+  });
 
   const handleSearch = async () => {
     setLoading(true);
@@ -79,6 +89,30 @@ function App() {
               <p>Brak połączeń</p>
           )}
         </div>
+        <h2>Dodaj połączenie</h2>
+
+        <input placeholder="Skąd" onChange={e => setNewConnection({...newConnection, from: e.target.value})} />
+        <input placeholder="Dokąd" onChange={e => setNewConnection({...newConnection, to: e.target.value})} />
+        <input type="date" onChange={e => setNewConnection({...newConnection, date: e.target.value})} />
+        <input placeholder="Godzina odjazdu" onChange={e => setNewConnection({...newConnection, departureTime: e.target.value})} />
+        <input placeholder="Godzina przyjazdu" onChange={e => setNewConnection({...newConnection, arrivalTime: e.target.value})} />
+        <input placeholder="Czas (min)" type="number" onChange={e => setNewConnection({...newConnection, duration: Number(e.target.value)})} />
+        <input placeholder="Cena" type="number" onChange={e => setNewConnection({...newConnection, price: Number(e.target.value)})} />
+        <input placeholder="Przesiadki" type="number" onChange={e => setNewConnection({...newConnection, changes: Number(e.target.value)})} />
+
+        <button onClick={async () => {
+          await fetch("http://localhost:3001/connections", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newConnection)
+          });
+
+          alert("Dodano!");
+        }}>
+          Dodaj
+        </button>
       </div>
   );
 }
