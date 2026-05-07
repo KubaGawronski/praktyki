@@ -75,6 +75,19 @@ app.delete("/connections/:id", async (req, res) => {
     }
 });
 
+app.put("/connections/:id", async (req, res) => {
+    try {
+        const updated = await Connection.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        res.json(updated);
+    } catch (err) {
+        res.status(500).json({ error: "Błąd edycji" });
+    }
+});
+
 app.listen(3001, () => {
     console.log("Server 3001");
 });
