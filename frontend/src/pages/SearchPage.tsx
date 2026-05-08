@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Connection = {
     _id?: string;
@@ -20,6 +20,7 @@ function SearchPage() {
     const [loading, setLoading] = useState(false);
     const [searched, setSearched] = useState(false);
     const [sort, setSort] = useState("");
+    const [stations, setStations] = useState<string[]>([]);
 
     const handleSearch = async () => {
         setLoading(true);
@@ -35,13 +36,43 @@ function SearchPage() {
         setLoading(false);
     };
 
+    const fetchStations = async () => {
+        const res = await fetch("http://localhost:3001/stations");
+        const data = await res.json();
+
+        const names = data.map((station: any) => station.name);
+
+        setStations(names);
+    };
+
+    useEffect(() => {
+        fetchStations();
+    }, []);
+
     return (
         <div style={{ maxWidth: "800px", margin: "0 auto", fontFamily: "Arial" }}>
             <h1 style={{ textAlign: "center" }}>🚆 Wyszukiwarka połączeń</h1>
 
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-                <input placeholder="Skąd" onChange={e => setFrom(e.target.value)} />
-                <input placeholder="Dokąd" onChange={e => setTo(e.target.value)} />
+                <select onChange={(e) => setFrom(e.target.value)}>
+                    <option value="">Skąd</option>
+
+                    {stations.map((station) => (
+                        <option key={station} value={station}>
+                            {station}
+                        </option>
+                    ))}
+                </select>
+
+                <select onChange={(e) => setTo(e.target.value)}>
+                    <option value="">Dokąd</option>
+
+                    {stations.map((station) => (
+                        <option key={station} value={station}>
+                            {station}
+                        </option>
+                    ))}
+                </select>
                 <input type="date" onChange={e => setDate(e.target.value)} />
 
                 <select onChange={(e) => setSort(e.target.value)}>
