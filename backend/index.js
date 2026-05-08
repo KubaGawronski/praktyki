@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const stationsCollection = db.collection("stations");
 require("dotenv").config();
 
 const app = express();
@@ -86,6 +87,12 @@ app.put("/connections/:id", async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: "Błąd edycji" });
     }
+});
+
+app.get("/stations", async (req, res) => {
+    const stations = await stationsCollection.find().toArray();
+
+    res.json(stations);
 });
 
 app.listen(3001, () => {
