@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const stationsCollection = db.collection("stations");
 require("dotenv").config();
 
 const app = express();
@@ -17,6 +16,7 @@ app.get("/", (req, res) => {
 });
 
 const Connection = require("./models/Connection");
+const Station = require("./models/Station");
 
 app.get("/connections", async (req, res) => {
     try {
@@ -90,9 +90,13 @@ app.put("/connections/:id", async (req, res) => {
 });
 
 app.get("/stations", async (req, res) => {
-    const stations = await stationsCollection.find().toArray();
+    try {
+        const stations = await Station.find();
 
-    res.json(stations);
+        res.json(stations);
+    } catch (err) {
+        res.status(500).json({ error: "Błąd pobierania stacji" });
+    }
 });
 
 app.listen(3001, () => {
