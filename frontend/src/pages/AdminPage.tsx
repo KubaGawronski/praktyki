@@ -19,20 +19,22 @@ function AdminPage() {
         date: "",
         departureTime: "",
         arrivalTime: "",
-        duration: 0,
-        price: 0,
-        changes: 0
+        duration: "",
+        price: "",
+        changes: ""
     });
 
     const [connections, setConnections] = useState<Connection[]>([]);
-
+    const [stations, setStations] = useState<string[]>([]);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [error, setError] = useState("");
     const fetchConnections = async () => {
         const res = await fetch("http://localhost:3001/connections");
         const data = await res.json();
 
         setConnections(data);
     };
-    const [stations, setStations] = useState<string[]>([]);
+
     const fetchStations = async () => {
         const res = await fetch("http://localhost:3001/stations");
         const data = await res.json();
@@ -42,7 +44,7 @@ function AdminPage() {
         setStations(names);
     };
 
-    const [editingId, setEditingId] = useState<string | null>(null);
+
 
     useEffect(() => {
         fetchConnections();
@@ -58,9 +60,9 @@ function AdminPage() {
             date: conn.date,
             departureTime: conn.departureTime,
             arrivalTime: conn.arrivalTime,
-            duration: conn.duration,
-            price: conn.price,
-            changes: conn.changes
+            duration: String(conn.duration),
+            price: String(conn.price),
+            changes: String(conn.changes)
         });
     };
 
@@ -209,7 +211,7 @@ function AdminPage() {
                             onChange={e =>
                                 setNewConnection({
                                     ...newConnection,
-                                    duration: Number(e.target.value)
+                                    duration: e.target.value
                                 })
                             }
                         />
@@ -222,7 +224,7 @@ function AdminPage() {
                             onChange={e =>
                                 setNewConnection({
                                     ...newConnection,
-                                    price: Number(e.target.value)
+                                    price: e.target.value
                                 })
                             }
                         />
@@ -235,7 +237,7 @@ function AdminPage() {
                             onChange={e =>
                                 setNewConnection({
                                     ...newConnection,
-                                    changes: Number(e.target.value)
+                                    changes: e.target.value
                                 })
                             }
                         />
@@ -254,6 +256,34 @@ function AdminPage() {
                             fontSize: "15px"
                         }}
                         onClick={async () => {
+
+                            if (
+                                !newConnection.from ||
+                                !newConnection.to ||
+                                !newConnection.date ||
+                                !newConnection.departureTime ||
+                                !newConnection.arrivalTime
+                            ) {
+                                setError("Uzupełnij wszystkie pola");
+                                return;
+                            }
+
+                            if (newConnection.from === newConnection.to) {
+                                setError("Miasto początkowe i końcowe nie mogą być takie same");
+                                return;
+                            }
+
+                            if (
+                                Number(newConnection.duration) <= 0 ||
+                                Number(newConnection.price) <= 0 ||
+                                Number(newConnection.changes) < 0
+                            ) {
+                                setError("Wprowadź poprawne wartości liczbowe");
+                                return;
+                            }
+
+                            setError("");
+
                             if (editingId) {
                                 await fetch(
                                     `http://localhost:3001/connections/${editingId}`,
@@ -266,7 +296,7 @@ function AdminPage() {
                                     }
                                 );
 
-                                alert("Zedytowano połączenie!");
+                                setError("Pomyślnie zedytowano połączenie");
                             } else {
                                 await fetch("http://localhost:3001/connections", {
                                     method: "POST",
@@ -276,16 +306,40 @@ function AdminPage() {
                                     body: JSON.stringify(newConnection)
                                 });
 
-                                alert("Dodano połączenie!");
+                                setError("Pomyślnie dodano połączenie");
                             }
 
                             fetchConnections();
 
                             setEditingId(null);
+
+                            setNewConnection({
+                                from: "",
+                                to: "",
+                                date: "",
+                                departureTime: "",
+                                arrivalTime: "",
+                                duration: "",
+                                price: "",
+                                changes: ""
+                            });
                         }}
                     >
                         {editingId ? "Zapisz zmiany" : "Dodaj połączenie"}
                     </button>
+                    {error && (
+                        <p
+                            style={{
+                                marginTop: "14px",
+                                color: error.includes("Pomyślnie")
+                                    ? "#22c55e"
+                                    : "#ef4444",
+                                fontWeight: "bold"
+                            }}
+                        >
+                            {error}
+                        </p>
+                    )}
                 </div>
 
                 <div>
@@ -317,6 +371,10 @@ function AdminPage() {
 
                             <p style={{ margin: 0 }}>
                                 {conn.departureTime} - {conn.arrivalTime}
+                            </p>
+
+                            <p style={{ margin: 0 }}>
+                                Liczba przesiadek: {conn.changes}
                             </p>
 
                             <p style={{color: "#22c55e", fontWeight: "bold" }}>
