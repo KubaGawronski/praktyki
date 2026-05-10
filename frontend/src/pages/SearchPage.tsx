@@ -21,8 +21,19 @@ function SearchPage() {
     const [searched, setSearched] = useState(false);
     const [sort, setSort] = useState("");
     const [stations, setStations] = useState<string[]>([]);
-
+    const [error, setError] = useState("");
     const handleSearch = async () => {
+        if (!from || !to || !date) {
+            setError("Uzupełnij wszystkie pola wyszukiwania!");
+            return;
+        }
+
+        if (from === to) {
+            setError("Miasto początkowe i końcowe nie mogą być takie same!");
+            return;
+        }
+
+        setError("");
         setLoading(true);
         setSearched(true);
         setResults([]);
@@ -194,12 +205,26 @@ function SearchPage() {
                             fontSize: "15px",
                             transition: "0.2s"
                         }}
-                        onClick={handleSearch}
+                        onClick={
+
+                        handleSearch
+                    }
                     >
                         Szukaj
                     </button>
                 </div>
-
+                {error && (
+                    <p
+                        style={{
+                            color: "#ef4444",
+                            marginBottom: "20px",
+                            fontWeight: "bold",
+                            textAlign: "center"
+                        }}
+                    >
+                        {error}
+                    </p>
+                )}
                 <div>
                     {results.map((conn: Connection, index) => (
                         <div
