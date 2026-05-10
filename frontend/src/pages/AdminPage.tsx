@@ -42,10 +42,27 @@ function AdminPage() {
         setStations(names);
     };
 
+    const [editingId, setEditingId] = useState<string | null>(null);
+
     useEffect(() => {
         fetchConnections();
         fetchStations();
     }, []);
+
+    const handleEdit = (conn: Connection) => {
+        setEditingId(conn._id || null);
+
+        setNewConnection({
+            from: conn.from,
+            to: conn.to,
+            date: conn.date,
+            departureTime: conn.departureTime,
+            arrivalTime: conn.arrivalTime,
+            duration: conn.duration,
+            price: conn.price,
+            changes: conn.changes
+        });
+    };
 
     return (
         <div
@@ -229,20 +246,37 @@ function AdminPage() {
                             fontSize: "15px"
                         }}
                         onClick={async () => {
-                            await fetch("http://localhost:3001/connections", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-                                body: JSON.stringify(newConnection)
-                            });
+                            if (editingId) {
+                                await fetch(
+                                    `http://localhost:3001/connections/${editingId}`,
+                                    {
+                                        method: "PUT",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify(newConnection)
+                                    }
+                                );
 
-                            alert("Dodano połączenie!");
+                                alert("Zedytowano połączenie!");
+                            } else {
+                                await fetch("http://localhost:3001/connections", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify(newConnection)
+                                });
+
+                                alert("Dodano połączenie!");
+                            }
 
                             fetchConnections();
+
+                            setEditingId(null);
                         }}
                     >
-                        Dodaj połączenie
+                        {editingId ? "Zapisz zmiany" : "Dodaj połączenie"}
                     </button>
                 </div>
 
@@ -280,6 +314,22 @@ function AdminPage() {
                             <p style={{color: "#22c55e", fontWeight: "bold" }}>
                                 {conn.price} zł
                             </p>
+
+                            <button
+                                style={{
+                                    backgroundColor: "#2563eb",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "12px",
+                                    padding: "12px 18px",
+                                    cursor: "pointer",
+                                    fontWeight: "bold",
+                                    marginRight: "10px"
+                                }}
+                                onClick={() => handleEdit(conn)}
+                            >
+                                Edytuj
+                            </button>
 
                             <button
                                 style={{
