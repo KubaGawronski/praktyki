@@ -128,6 +128,7 @@ function AdminPage() {
                         }}
                     >
                         <select
+                            value={newConnection.from}
                             style={inputStyle}
                             onChange={(e) =>
                                 setNewConnection({
@@ -146,6 +147,7 @@ function AdminPage() {
                         </select>
 
                         <select
+                            value={newConnection.to}
                             style={inputStyle}
                             onChange={(e) =>
                                 setNewConnection({
@@ -164,6 +166,7 @@ function AdminPage() {
                         </select>
 
                         <input
+                            value={newConnection.date}
                             type="date"
                             style={inputStyle}
                             onChange={e =>
@@ -175,6 +178,7 @@ function AdminPage() {
                         />
 
                         <input
+                            value={newConnection.departureTime}
                             placeholder="Godzina odjazdu"
                             style={inputStyle}
                             onChange={e =>
@@ -186,6 +190,7 @@ function AdminPage() {
                         />
 
                         <input
+                            value={newConnection.arrivalTime}
                             placeholder="Godzina przyjazdu"
                             style={inputStyle}
                             onChange={e =>
@@ -197,6 +202,7 @@ function AdminPage() {
                         />
 
                         <input
+                            value={newConnection.duration}
                             placeholder="Czas (min)"
                             type="number"
                             style={inputStyle}
@@ -209,6 +215,7 @@ function AdminPage() {
                         />
 
                         <input
+                            value={newConnection.price}
                             placeholder="Cena"
                             type="number"
                             style={inputStyle}
@@ -221,6 +228,7 @@ function AdminPage() {
                         />
 
                         <input
+                            value={newConnection.changes}
                             placeholder="Przesiadki"
                             type="number"
                             style={inputStyle}
