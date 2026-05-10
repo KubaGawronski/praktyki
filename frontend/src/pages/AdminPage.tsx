@@ -181,6 +181,7 @@ function AdminPage() {
 
                         <input
                             value={newConnection.departureTime}
+                            type="time"
                             placeholder="Godzina odjazdu"
                             style={inputStyle}
                             onChange={e =>
@@ -193,6 +194,7 @@ function AdminPage() {
 
                         <input
                             value={newConnection.arrivalTime}
+                            type="time"
                             placeholder="Godzina przyjazdu"
                             style={inputStyle}
                             onChange={e =>
@@ -270,6 +272,11 @@ function AdminPage() {
 
                             if (newConnection.from === newConnection.to) {
                                 setError("Miasto początkowe i końcowe nie mogą być takie same");
+                                return;
+                            }
+
+                            if (newConnection.departureTime === newConnection.arrivalTime) {
+                                setError("Godzina odjazdu i przyjazdu nie mogą być takie same");
                                 return;
                             }
 
@@ -408,6 +415,12 @@ function AdminPage() {
                                     fontWeight: "bold"
                                 }}
                                 onClick={async () => {
+                                    const confirmDelete = window.confirm(
+                                        "Czy na pewno chcesz usunąć to połączenie?"
+                                    );
+
+                                    if (!confirmDelete) return;
+
                                     await fetch(
                                         `http://localhost:3001/connections/${conn._id}`,
                                         {
@@ -416,6 +429,8 @@ function AdminPage() {
                                     );
 
                                     fetchConnections();
+
+                                    setError("Pomyślnie usunięto połączenie");
                                 }}
                             >
                                 Usuń
