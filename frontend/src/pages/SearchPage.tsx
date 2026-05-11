@@ -39,9 +39,17 @@ function SearchPage() {
         setSearched(true);
         setResults([]);
 
-        const res = await fetch(
-            `http://localhost:3001/connections?from=${from}&to=${to}&date=${date}&sort=${sort}`
-        );
+        let url = `http://localhost:3001/connections?from=${from}&to=${to}`;
+
+        if (!showAllDates) {
+            url += `&date=${date}`;
+        }
+
+        if (sort) {
+            url += `&sort=${sort}`;
+        }
+
+        const res = await fetch(url);
 
         const data = await res.json();
 
@@ -225,10 +233,7 @@ function SearchPage() {
                             fontSize: "15px",
                             transition: "0.2s"
                         }}
-                        onClick={
-
-                        handleSearch
-                    }
+                        onClick={handleSearch}
                     >
                         Szukaj
                     </button>
