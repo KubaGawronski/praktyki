@@ -69,16 +69,20 @@ function AdminPage() {
     return (
         <div
             style={{
+                display: "flex",
+                flexDirection: "column",
                 minHeight: "100vh",
                 backgroundColor: "#0f172a",
                 padding: "40px",
                 fontFamily: "Arial",
-                color: "white"
+                color: "white",
+                flex: 1
             }}
         >
             <div
                 style={{
                     maxWidth: "1100px",
+                    width: "100%",
                     margin: "0 auto"
                 }}
             >
