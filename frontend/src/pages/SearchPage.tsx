@@ -173,19 +173,29 @@ function SearchPage() {
                         ))}
                     </select>
 
-                    <input
-                        type="checkbox"
-                        checked={showAllDates}
-                        onChange={(e) => {
-                            setShowAllDates(e.target.checked);
-
-                            if (e.target.checked) {
-                                setDate("");
-                            }
+                    <label
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                            fontSize: "14px",
+                            whiteSpace: "nowrap"
                         }}
-                    />
+                    >
+                        <input
+                            type="checkbox"
+                            checked={showAllDates}
+                            onChange={(e) => {
+                                setShowAllDates(e.target.checked);
 
-                    <label>Nie wybieraj konkretnej daty</label>
+                                if (e.target.checked) {
+                                    setDate("");
+                                }
+                            }}
+                        />
+
+                        Wszystkie terminy
+                    </label>
 
                     {!showAllDates && (
                         <input
