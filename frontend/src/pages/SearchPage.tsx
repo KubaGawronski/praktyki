@@ -22,8 +22,9 @@ function SearchPage() {
     const [sort, setSort] = useState("");
     const [stations, setStations] = useState<string[]>([]);
     const [error, setError] = useState("");
+    const [showAllDates, setShowAllDates] = useState(false);
     const handleSearch = async () => {
-        if (!from || !to || !date) {
+        if (!from || !to || (!date && !showAllDates)) {
             setError("Uzupełnij wszystkie pola wyszukiwania!");
             return;
         }
@@ -165,20 +166,35 @@ function SearchPage() {
                     </select>
 
                     <input
-                        style={{
-                            padding: "14px",
-                            borderRadius: "14px",
-                            border: "1px solid #334155",
-                            flex: 1,
-                            backgroundColor: "#0f172a",
-                            color: "white",
-                            fontSize: "15px",
-                            outline: "none"
+                        type="checkbox"
+                        checked={showAllDates}
+                        onChange={(e) => {
+                            setShowAllDates(e.target.checked);
+
+                            if (e.target.checked) {
+                                setDate("");
+                            }
                         }}
-                        type="date"
-                        onChange={(e) => setDate(e.target.value)}
                     />
 
+                    <label>Nie wybieraj konkretnej daty</label>
+
+                    {!showAllDates && (
+                        <input
+                            style={{
+                                padding: "14px",
+                                borderRadius: "14px",
+                                border: "1px solid #334155",
+                                flex: 1,
+                                backgroundColor: "#0f172a",
+                                color: "white",
+                                fontSize: "15px",
+                                outline: "none"
+                            }}
+                            type="date"
+                            onChange={(e) => setDate(e.target.value)}
+                        />
+                    )}
                     <select
                         style={{
                             padding: "14px",
