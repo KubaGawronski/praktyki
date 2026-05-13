@@ -1,8 +1,24 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import SearchPage from "./pages/SearchPage";
 import AdminPage from "./pages/AdminPage";
 
 function App() {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     return (
         <BrowserRouter>
             <div
@@ -16,9 +32,11 @@ function App() {
                 <nav
                     style={{
                         display: "flex",
+                        flexDirection: isMobile ? "column" : "row",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        padding: "20px 40px",
+                        gap: isMobile ? "16px" : "0",
+                        padding: isMobile ? "20px" : "20px 40px",
                         backgroundColor: "#111827",
                         borderBottom: "1px solid #334155"
                     }}
@@ -26,7 +44,9 @@ function App() {
                     <h2
                         style={{
                             color: "white",
-                            margin: 0
+                            margin: 0,
+                            fontSize: isMobile ? "24px" : "28px",
+                            textAlign: "center"
                         }}
                     >
                         RailFinder 🚆
@@ -35,19 +55,30 @@ function App() {
                     <div
                         style={{
                             display: "flex",
-                            gap: "20px"
+                            flexDirection: isMobile ? "column" : "row",
+                            gap: "14px",
+                            width: isMobile ? "100%" : "auto",
+                            alignItems: "center"
                         }}
                     >
                         <Link
                             to="/"
-                            style={linkStyle}
+                            style={{
+                                ...linkStyle,
+                                width: isMobile ? "100%" : "auto",
+                                textAlign: "center"
+                            }}
                         >
                             Wyszukiwarka
                         </Link>
 
                         <Link
                             to="/admin"
-                            style={linkStyle}
+                            style={{
+                                ...linkStyle,
+                                width: isMobile ? "100%" : "auto",
+                                textAlign: "center"
+                            }}
                         >
                             Panel admina
                         </Link>
@@ -63,11 +94,12 @@ function App() {
 
                 <footer
                     style={{
-                        padding: "20px",
+                        padding: isMobile ? "18px" : "20px",
                         textAlign: "center",
                         color: "#94a3b8",
                         borderTop: "1px solid #334155",
-                        backgroundColor: "#111827"
+                        backgroundColor: "#111827",
+                        fontSize: isMobile ? "14px" : "16px"
                     }}
                 >
                     © 2025 RailFinder — System wyszukiwania połączeń kolejowych
@@ -81,8 +113,9 @@ const linkStyle = {
     color: "white",
     textDecoration: "none",
     fontWeight: "bold",
-    padding: "10px 16px",
-    borderRadius: "10px"
+    padding: "12px 18px",
+    borderRadius: "10px",
+    backgroundColor: "#1e293b"
 };
 
 export default App;
