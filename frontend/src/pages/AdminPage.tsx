@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import type { CSSProperties } from "react";
 type Connection = {
     _id?: string;
     from: string;
@@ -23,6 +23,20 @@ function AdminPage() {
         price: "",
         changes: ""
     });
+
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     const [connections, setConnections] = useState<Connection[]>([]);
     const [stations, setStations] = useState<string[]>([]);
@@ -73,7 +87,7 @@ function AdminPage() {
                 flexDirection: "column",
                 minHeight: "100vh",
                 backgroundColor: "#0f172a",
-                padding: "40px",
+                padding: isMobile ? "20px" : "40px",
                 fontFamily: "Arial",
                 color: "white",
                 flex: 1
@@ -90,7 +104,7 @@ function AdminPage() {
                     <h1
                         style={{
                             textAlign: "center",
-                            fontSize: "48px",
+                            fontSize: isMobile ? "34px" : "48px",
                             marginBottom: "10px"
                         }}
                     >
@@ -109,6 +123,7 @@ function AdminPage() {
 
                 <div
                     style={{
+                        width: isMobile ? "100%" : "auto",
                         backgroundColor: "#1e293b",
                         borderRadius: "24px",
                         padding: "24px",
@@ -129,7 +144,7 @@ function AdminPage() {
                     <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "1fr 1fr",
+                            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                             gap: "14px"
                         }}
                     >
@@ -368,8 +383,11 @@ function AdminPage() {
                                 marginBottom: "16px",
                                 display: "flex",
                                 justifyContent: "space-between",
-                                alignItems: "center",
+                                flexDirection: isMobile ? "column" : "row",
+                                alignItems: isMobile ? "flex-start" : "center",
+                                gap: "16px",
                                 boxShadow: "0 8px 20px rgba(0,0,0,0.25)"
+
                             }}
                         >
                             <h3>
@@ -392,53 +410,63 @@ function AdminPage() {
                                 {conn.price} zł
                             </p>
 
-                            <button
+                            <div
                                 style={{
-                                    backgroundColor: "#2563eb",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "12px",
-                                    padding: "12px 18px",
-                                    cursor: "pointer",
-                                    fontWeight: "bold",
-                                    marginRight: "10px"
-                                }}
-                                onClick={() => handleEdit(conn)}
-                            >
-                                Edytuj
-                            </button>
-
-                            <button
-                                style={{
-                                    backgroundColor: "#dc2626",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "12px",
-                                    padding: "12px 18px",
-                                    cursor: "pointer",
-                                    fontWeight: "bold"
-                                }}
-                                onClick={async () => {
-                                    const confirmDelete = window.confirm(
-                                        "Czy na pewno chcesz usunąć to połączenie?"
-                                    );
-
-                                    if (!confirmDelete) return;
-
-                                    await fetch(
-                                        `http://localhost:3001/connections/${conn._id}`,
-                                        {
-                                            method: "DELETE"
-                                        }
-                                    );
-
-                                    fetchConnections();
-
-                                    setError("Pomyślnie usunięto połączenie");
+                                    display: "flex",
+                                    flexDirection: isMobile ? "column" : "row",
+                                    gap: "10px",
+                                    width: isMobile ? "100%" : "auto"
                                 }}
                             >
-                                Usuń
-                            </button>
+                                <button
+                                    style={{
+                                        width: isMobile ? "100%" : "auto",
+                                        backgroundColor: "#2563eb",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "12px",
+                                        padding: "12px 18px",
+                                        cursor: "pointer",
+                                        fontWeight: "bold"
+                                    }}
+                                    onClick={() => handleEdit(conn)}
+                                >
+                                    Edytuj
+                                </button>
+
+                                <button
+                                    style={{
+                                        width: isMobile ? "100%" : "auto",
+                                        backgroundColor: "#dc2626",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "12px",
+                                        padding: "12px 18px",
+                                        cursor: "pointer",
+                                        fontWeight: "bold"
+                                    }}
+                                    onClick={async () => {
+                                        const confirmDelete = window.confirm(
+                                            "Czy na pewno chcesz usunąć to połączenie?"
+                                        );
+
+                                        if (!confirmDelete) return;
+
+                                        await fetch(
+                                            `http://localhost:3001/connections/${conn._id}`,
+                                            {
+                                                method: "DELETE"
+                                            }
+                                        );
+
+                                        fetchConnections();
+
+                                        setError("Pomyślnie usunięto połączenie");
+                                    }}
+                                >
+                                    Usuń
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -447,7 +475,9 @@ function AdminPage() {
     );
 }
 
-const inputStyle = {
+const inputStyle: CSSProperties = {
+    width: "100%",
+    boxSizing: "border-box",
     padding: "14px",
     borderRadius: "14px",
     border: "1px solid #334155",
