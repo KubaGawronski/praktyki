@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import type { CSSProperties } from "react";
+
+import {
+    pageContainerStyle,
+    contentWrapperStyle,
+    cardStyle,
+    inputStyle,
+    primaryButtonStyle,
+    dangerButtonStyle
+} from "../styles/commonStyles";
+
 type Connection = {
     _id?: string;
     from: string;
@@ -83,22 +92,15 @@ function AdminPage() {
     return (
         <div
             style={{
+                ...pageContainerStyle,
                 display: "flex",
                 flexDirection: "column",
-                minHeight: "100vh",
-                backgroundColor: "#0f172a",
                 padding: isMobile ? "20px" : "40px",
-                fontFamily: "Arial",
-                color: "white",
                 flex: 1
             }}
         >
             <div
-                style={{
-                    maxWidth: "1100px",
-                    width: "100%",
-                    margin: "0 auto"
-                }}
+                style={contentWrapperStyle}
             >
                 <div style={{ marginBottom: "40px" }}>
                     <h1
@@ -123,13 +125,10 @@ function AdminPage() {
 
                 <div
                     style={{
+                        ...cardStyle,
                         width: isMobile ? "100%" : "auto",
-                        backgroundColor: "#1e293b",
-                        borderRadius: "24px",
                         padding: "24px",
-                        marginBottom: "40px",
-                        border: "1px solid #334155",
-                        boxShadow: "0 10px 30px rgba(0,0,0,0.35)"
+                        marginBottom: "40px"
                     }}
                 >
                     <h2
@@ -266,15 +265,8 @@ function AdminPage() {
 
                     <button
                         style={{
-                            marginTop: "20px",
-                            padding: "14px 24px",
-                            backgroundColor: "#2563eb",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "14px",
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                            fontSize: "15px"
+                            ...primaryButtonStyle,
+                            marginTop: "20px"
                         }}
                         onClick={async () => {
 
@@ -420,14 +412,10 @@ function AdminPage() {
                             >
                                 <button
                                     style={{
+                                        ...primaryButtonStyle,
                                         width: isMobile ? "100%" : "auto",
-                                        backgroundColor: "#2563eb",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "12px",
                                         padding: "12px 18px",
-                                        cursor: "pointer",
-                                        fontWeight: "bold"
+                                        borderRadius: "12px"
                                     }}
                                     onClick={() => handleEdit(conn)}
                                 >
@@ -436,14 +424,8 @@ function AdminPage() {
 
                                 <button
                                     style={{
-                                        width: isMobile ? "100%" : "auto",
-                                        backgroundColor: "#dc2626",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "12px",
-                                        padding: "12px 18px",
-                                        cursor: "pointer",
-                                        fontWeight: "bold"
+                                        ...dangerButtonStyle,
+                                        width: isMobile ? "100%" : "auto"
                                     }}
                                     onClick={async () => {
                                         const confirmDelete = window.confirm(
@@ -474,17 +456,5 @@ function AdminPage() {
         </div>
     );
 }
-
-const inputStyle: CSSProperties = {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "14px",
-    borderRadius: "14px",
-    border: "1px solid #334155",
-    backgroundColor: "#0f172a",
-    color: "white",
-    fontSize: "15px",
-    outline: "none"
-};
 
 export default AdminPage;
