@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
 
+import {
+    pageContainerStyle,
+    contentWrapperStyle,
+    cardStyle,
+    inputStyle,
+    primaryButtonStyle
+} from "../styles/commonStyles";
+
 type Connection = {
     _id?: string;
     from: string;
@@ -37,18 +45,6 @@ function SearchPage() {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
-
-    const inputStyle = {
-        width: "100%",
-        padding: "14px",
-        borderRadius: "14px",
-        border: "1px solid #334155",
-        backgroundColor: "#0f172a",
-        color: "white",
-        fontSize: "15px",
-        outline: "none",
-        boxSizing: "border-box" as const
-    };
 
     const handleSearch = async () => {
         if (!from || !to || (!date && !showAllDates)) {
@@ -99,19 +95,12 @@ useEffect(() => {
 return (
     <div
         style={{
-            minHeight: "100vh",
-            backgroundColor: "#0f172a",
-            padding: isMobile ? "20px" : "40px",
-            fontFamily: "Arial",
-            color: "white"
+            ...pageContainerStyle,
+            padding: isMobile ? "20px" : "40px"
         }}
     >
         <div
-            style={{
-                maxWidth: "1100px",
-                width: "100%",
-                margin: "0 auto"
-            }}
+            style={contentWrapperStyle}
         >
             <div style={{ marginBottom: "40px" }}>
                 <h1
@@ -140,17 +129,14 @@ return (
 
             <div
                 style={{
+                    ...cardStyle,
                     display: "grid",
                     gridTemplateColumns: isMobile
                         ? "1fr"
                         : "repeat(5, 1fr)",
                     gap: "14px",
                     marginBottom: "35px",
-                    backgroundColor: "#1e293b",
-                    padding: "24px",
-                    borderRadius: "24px",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-                    border: "1px solid #334155"
+                    padding: "24px"
                 }}
             >
                 <select
@@ -198,15 +184,8 @@ return (
 
                 <button
                     style={{
-                        width: "100%",
-                        padding: "14px 24px",
-                        cursor: "pointer",
-                        backgroundColor: "#2563eb",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "14px",
-                        fontWeight: "bold",
-                        fontSize: "15px"
+                        ...primaryButtonStyle,
+                        width: "100%"
                     }}
                     onClick={handleSearch}
                 >
