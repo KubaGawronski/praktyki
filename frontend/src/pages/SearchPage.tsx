@@ -5,7 +5,7 @@ import {
     contentWrapperStyle,
     cardStyle,
     inputStyle,
-    primaryButtonStyle
+    primaryButtonStyle, dangerButtonStyle
 } from "../styles/commonStyles";
 
 import type { Connection } from "../types/Connection";
@@ -23,8 +23,8 @@ function SearchPage() {
     const [stations, setStations] = useState<string[]>([]);
     const [error, setError] = useState("");
     const [showAllDates, setShowAllDates] = useState(false);
-
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [favorites, setFavorites] = useState<Connection[]>([]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -83,6 +83,56 @@ const fetchStations = async () => {
 useEffect(() => {
     fetchStations();
 }, []);
+
+useEffect(() => {
+    const savedFavorites = localStorage.getItem("favorites");
+
+    if (savedFavorites) {
+        setFavorites(JSON.parse(savedFavorites));
+    }
+}, []);
+
+const addToFavorites = (connection: Connection) => {
+    const alreadyExists = favorites.some(
+        fav =>
+            fav.from === connection.from &&
+            fav.to === connection.to &&
+            fav.date === connection.date &&
+            fav.departureTime === connection.departureTime
+        );
+
+        if (alreadyExists) {
+            return;
+        }
+
+        const updatedFavorites = [...favorites, connection];
+
+        setFavorites(updatedFavorites);
+
+        localStorage.setItem(
+            "favorites",
+            JSON.stringify(updatedFavorites)
+        );
+};
+
+const removeFavorite = (connection: Connection) => {
+    const updatedFavorites = favorites.filter(
+        fav =>
+            !(
+                fav.from === connection.from &&
+                fav.to === connection.to &&
+                fav.date === connection.date &&
+                fav.departureTime === connection.departureTime
+            )
+    );
+
+    setFavorites(updatedFavorites);
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(updatedFavorites)
+    );
+};
 
 return (
     <div
@@ -221,6 +271,61 @@ return (
                 </p>
             )}
 
+            {favorites.length > 0 && (
+                <div style={{ marginBottom: "40px" }}>
+                    <h2 style={{ marginBottom: "20px" }}>
+                        ❤️ Ulubione trasy
+                    </h2>
+
+                    {favorites.map((conn, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                ...cardStyle,
+                                padding: "20px",
+                                marginBottom: "16px",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: "20px",
+                                flexDirection: isMobile ? "column" : "row"
+                            }}
+                        >
+                            <div>
+                                <h3 style={{ margin: 0 }}>
+                                    {conn.from} → {conn.to}
+                                </h3>
+
+                                <p style={{ color: "#94a3b8", margin: "6px 0" }}>
+                                    {new Date(conn.date).toLocaleDateString("pl-PL")}
+                                </p>
+
+                                <p style={{ margin: "6px 0" }}>
+                                    {conn.departureTime} - {conn.arrivalTime}
+                                </p>
+
+                                <p style={{ margin: "6px 0" }}>
+                                    {conn.changes === 0
+                                        ? "Bez przesiadek"
+                                        : `Przesiadki: ${conn.changes}`}
+                                </p>
+
+                                <h3 style={{ color: "#22c55e", margin: 0 }}>
+                                    {conn.price} zł
+                                </h3>
+                            </div>
+
+                            <button
+                                style={dangerButtonStyle}
+                                onClick={() => removeFavorite(conn)}
+                            >
+                                Usuń
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <div>
                 {results.map((conn: Connection, index) => (
                     <div
@@ -351,6 +456,16 @@ return (
                             >
                                 {conn.price} zł
                             </h3>
+                            <button
+                                style={{
+                                    ...primaryButtonStyle,
+                                    marginTop: "10px",
+                                    width: isMobile ? "100%" : "auto"
+                                }}
+                                onClick={() => addToFavorites(conn)}
+                            >
+                                ❤️ Zapisz
+                            </button>
                         </div>
                     </div>
                 ))}
