@@ -9,17 +9,9 @@ import {
     dangerButtonStyle
 } from "../styles/commonStyles";
 
-type Connection = {
-    _id?: string;
-    from: string;
-    to: string;
-    date: string;
-    departureTime: string;
-    arrivalTime: string;
-    duration: number;
-    price: number;
-    changes: number;
-};
+import type { Connection } from "../types/Connection";
+
+import { API_URL } from "../config/api";
 
 function AdminPage() {
     const [newConnection, setNewConnection] = useState({
@@ -52,14 +44,14 @@ function AdminPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [error, setError] = useState("");
     const fetchConnections = async () => {
-        const res = await fetch("http://localhost:3001/connections");
+        const res = await fetch(`${API_URL}/connections`);
         const data = await res.json();
 
         setConnections(data);
     };
 
     const fetchStations = async () => {
-        const res = await fetch("http://localhost:3001/stations");
+        const res = await fetch(`${API_URL}/stations`);
         const data = await res.json();
 
         const names = data.map((station: any) => station.name);
@@ -304,7 +296,7 @@ function AdminPage() {
 
                             if (editingId) {
                                 await fetch(
-                                    `http://localhost:3001/connections/${editingId}`,
+                                    `${API_URL}/connections/${editingId}`,
                                     {
                                         method: "PUT",
                                         headers: {
@@ -316,7 +308,7 @@ function AdminPage() {
 
                                 setError("Pomyślnie zedytowano połączenie");
                             } else {
-                                await fetch("http://localhost:3001/connections", {
+                                await fetch(`${API_URL}/connections`, {
                                     method: "POST",
                                     headers: {
                                         "Content-Type": "application/json"
@@ -435,7 +427,7 @@ function AdminPage() {
                                         if (!confirmDelete) return;
 
                                         await fetch(
-                                            `http://localhost:3001/connections/${conn._id}`,
+                                            `${API_URL}/connections/${conn._id}`,
                                             {
                                                 method: "DELETE"
                                             }

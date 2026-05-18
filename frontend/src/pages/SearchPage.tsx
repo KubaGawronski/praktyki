@@ -8,17 +8,9 @@ import {
     primaryButtonStyle
 } from "../styles/commonStyles";
 
-type Connection = {
-    _id?: string;
-    from: string;
-    to: string;
-    date: string;
-    departureTime: string;
-    arrivalTime: string;
-    duration: number;
-    price: number;
-    changes: number;
-};
+import type { Connection } from "../types/Connection";
+
+import { API_URL } from "../config/api";
 
 function SearchPage() {
     const [from, setFrom] = useState("");
@@ -62,7 +54,7 @@ function SearchPage() {
         setSearched(true);
         setResults([]);
 
-        let url = `http://localhost:3001/connections?from=${from}&to=${to}`;
+        let url = `${API_URL}/connections?from=${from}&to=${to}`;
 
     if (!showAllDates) {
         url += `&date=${date}`;
