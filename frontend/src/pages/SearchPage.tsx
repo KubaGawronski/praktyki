@@ -12,6 +12,9 @@ import type { Connection } from "../types/Connection";
 
 import { API_URL } from "../config/api";
 
+import ConnectionMap from "../components/ConnectionMap";
+import { cityCoordinates } from "../data/cityCoordinates";
+
 function SearchPage() {
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
@@ -72,7 +75,7 @@ setLoading(false);
 };
 
 const fetchStations = async () => {
-    const res = await fetch("http://localhost:3001/stations");
+    const res = await fetch(`${API_URL}/stations`);
     const data = await res.json();
 
     const names = data.map((station: any) => station.name);
@@ -480,6 +483,18 @@ return (
                     <p style={{ textAlign: "center" }}>
                         Brak połączeń
                     </p>
+                )}
+
+                {results.length > 0 && (
+                    <div>
+                        <h2 style={{ marginBottom: "20px" }}>
+                            🗺️ Trasa na mapie:
+                        </h2>
+                        <ConnectionMap
+                            fromCoords={cityCoordinates[results[0].from]}
+                            toCoords={cityCoordinates[results[0].to]}
+                        />
+                    </div>
                 )}
             </div>
         </div>
