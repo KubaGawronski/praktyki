@@ -2,7 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
-
+const Connection = require("./models/Connection");
+const Station = require("./models/Station");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -14,9 +15,6 @@ mongoose.connect(process.env.MONGO_URI)
 app.get("/", (req, res) => {
     res.send("API działa 🚆");
 });
-
-const Connection = require("./models/Connection");
-const Station = require("./models/Station");
 
 app.get("/connections", async (req, res) => {
     try {
@@ -49,22 +47,6 @@ app.post("/connections", async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: "Błąd zapisu" });
     }
-});
-
-app.get("/add-test", async (req, res) => {
-    const test = new Connection({
-        from: "Warszawa",
-        to: "Kraków",
-        date: "2025-05-02",
-        departureTime: "08:00",
-        arrivalTime: "11:00",
-        duration: 180,
-        price: 120,
-        changes: 0
-    });
-
-    await test.save();
-    res.send("Dodano!");
 });
 
 app.delete("/connections/:id", async (req, res) => {
