@@ -3,11 +3,18 @@ import { useEffect, useState } from "react";
 import {
     pageContainerStyle,
     contentWrapperStyle,
-    cardStyle
+    cardStyle,
+    inputStyle,
+    primaryButtonStyle
 } from "../styles/commonStyles";
+
+import { API_URL } from "../config/api";
 
 function PdfPage() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [station, setStation] = useState("");
+    const [stations, setStations] = useState<string[]>([]);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const handleResize = () => {
@@ -19,6 +26,29 @@ function PdfPage() {
         return () => {
             window.removeEventListener("resize", handleResize);
         };
+    }, []);
+
+    const fetchStations = async () => {
+        const res = await fetch(`${API_URL}/stations`);
+        const data = await res.json();
+
+        const names = data.map((station: any) => station.name);
+
+        setStations(names);
+    };
+
+    const handleGeneratePdf = () => {
+        if (!station) {
+            setError("Wybierz stację!");
+            return;
+        }
+
+        setError("");
+
+    };
+
+    useEffect(() => {
+        fetchStations();
     }, []);
 
     return (
@@ -54,18 +84,55 @@ function PdfPage() {
                     style={{
                         ...cardStyle,
                         padding: "30px",
-                        textAlign: "center"
+                        display: "grid",
+                        gridTemplateColumns: isMobile
+                            ? "1fr"
+                            : "2fr 1fr",
+                        gap: "16px",
+                        alignItems: "center"
                     }}
                 >
-                    <h2>
-                        Funkcja w przygotowaniu 🚧
-                    </h2>
+                    <select
+                        value={station}
+                        style={inputStyle}
+                        onChange={(e) => setStation(e.target.value)}
+                    >
+                        <option value="">
+                            Wybierz stację
+                        </option>
 
-                    <p style={{ color: "#94a3b8" }}>
-                        W tej zakładce będzie można generować
-                        pliki PDF z rozkładem jazdy dla wybranej stacji.
-                    </p>
+                        {stations.map((station) => (
+                            <option
+                                key={station}
+                                value={station}
+                            >
+                                {station}
+                            </option>
+                        ))}
+                    </select>
+
+                    <button
+                        style={{
+                            ...primaryButtonStyle,
+                            width: "100%"
+                        }}
+                        onClick={handleGeneratePdf}
+                    >
+                        Generuj PDF
+                    </button>
                 </div>
+                {error && (
+                    <p
+                        style={{
+                            color: "#ef4444",
+                            marginTop: "16px",
+                            textAlign: "center",
+                            fontWeight: "bold"
+                        }}
+                    >
+                        {error}
+                    </p>
+                )}
             </div>
         </div>
     );
