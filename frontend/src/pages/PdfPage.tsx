@@ -45,6 +45,10 @@ function PdfPage() {
 
         setError("");
 
+        window.open(
+            `${API_URL}/pdf?station=${station}`,
+            "_blank"
+        );
     };
 
     useEffect(() => {
