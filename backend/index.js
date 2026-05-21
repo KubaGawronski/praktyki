@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const PDFDocument = require("pdfkit");
 require("dotenv").config();
 const Connection = require("./models/Connection");
 const Station = require("./models/Station");
@@ -78,6 +79,72 @@ app.get("/stations", async (req, res) => {
         res.json(stations);
     } catch (err) {
         res.status(500).json({ error: "Błąd pobierania stacji" });
+    }
+});
+
+app.get("/pdf", async (req, res) => {
+    try {
+        const { station } = req.query;
+
+        const connections = await Connection.find({
+            $or: [
+                { from: station },
+                { to: station }
+            ]
+        });
+
+        const doc = new PDFDocument();
+
+        res.setHeader(
+            "Content-Type",
+            "application/pdf"
+        );
+
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename=rozklad-${station}.pdf`
+        );
+
+        doc.pipe(res);
+
+        doc
+            .fontSize(22)
+            .text(`Rozkład jazdy dla stacji: ${station}`);
+
+        doc.moveDown();
+
+        connections.forEach((conn) => {
+            doc
+                .fontSize(14)
+                .text(
+                    `${conn.from} → ${conn.to}`
+                );
+
+            doc.text(
+                `Data: ${conn.date}`
+            );
+
+            doc.text(
+                `${conn.departureTime} - ${conn.arrivalTime}`
+            );
+
+            doc.text(
+                `Cena: ${conn.price} zł`
+            );
+
+            doc.text(
+                `Przesiadki: ${conn.changes}`
+            );
+
+            doc.moveDown();
+        });
+
+        doc.end();
+
+    } catch (err) {
+        res.status(500).json({
+            error: "Błąd generowania PDF"
+        });
     }
 });
 
