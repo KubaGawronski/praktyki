@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import SearchPage from "./pages/SearchPage";
 import AdminPage from "./pages/AdminPage";
+import PdfPage from "./pages/PdfPage";
 
 function App() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -82,6 +83,16 @@ function App() {
                         >
                             Panel admina
                         </Link>
+                        <Link
+                            to="/pdf"
+                            style={{
+                                ...linkStyle,
+                                width: isMobile ? "100%" : "auto",
+                                textAlign: "center"
+                            }}
+                        >
+                            Wygeneruj Rozkład PDF
+                        </Link>
                     </div>
                 </nav>
 
@@ -89,6 +100,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<SearchPage />} />
                         <Route path="/admin" element={<AdminPage />} />
+                        <Route path="/pdf" element={<PdfPage />} />
                     </Routes>
                 </div>
 
